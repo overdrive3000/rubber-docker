@@ -28,6 +28,13 @@ apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 0EBFCD8
 apt-get update
 apt-get -y install docker-ce stress python-dev build-essential cmake htop ipython python-pip git
 
+# Install Go
+curl -o /tmp/go.tar.gz https://dl.google.com/go/go1.10.1.linux-amd64.tar.gz
+tar -C /usr/local -xzf /tmp/go.tar.gz
+# Setting Go binary path
+sed -e '/^PATH/s/"$/:\/usr\/local\/go\/bin"/g' -i /etc/environments
+sed -e '/^PATH/s/"$/:\/home\/ubuntu\/go\/bin"/g' -i /etc/environments
+
 # Include the memory and memsw cgroups
 sed -i.bak 's|^kernel.*$|\0 cgroup_enable=memory swapaccount=1|' /boot/grub/menu.lst
 sed -i -r 's|GRUB_CMDLINE_LINUX="(.*)"|GRUB_CMDLINE_LINUX="\1 cgroup_enable=memory swapaccount=1"|' /etc/default/grub
@@ -47,8 +54,16 @@ usermod -G docker -a ubuntu
 # Clone git repo
 mkdir /workshop
 pushd /workshop
-git clone https://github.com/Fewbytes/rubber-docker.git
+git clone https://github.com/overdrive3000/rubber-docker.git
+git checkout go-version
 pip install -r rubber-docker/requirements.txt
+popd
+
+# Create golang workspace
+pushd /home/ubuntu
+mkdir -p go/{src,pkg,bin}
+mkdir -p go/src/github.com/overdrive3000/justforfunc32
+cp -r /workshop/rubber-docker/levelsgo/contenedor go/src/github.com/overdrive3000/justforfunc32/
 popd
 
 # Fetch images

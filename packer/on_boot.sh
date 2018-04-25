@@ -3,6 +3,7 @@
 mkdir -p /workshop/containers
 
 chown ubuntu:ubuntu -R /workshop
+chown ubuntu:ubuntu -R /home/ubuntu/go
 
 if [[ $(cat /proc/swaps | wc -l) -le 1 && ! -f /swap.img ]]; then
   dd if=/dev/zero of=/swap.img count=1024 bs=1M

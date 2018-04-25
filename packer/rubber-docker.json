@@ -2,9 +2,9 @@
 	"variables": {
 	    "aws_access_key": "{{ env `AWS_ACCESS_KEY_ID` }}",
 	    "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
-	    "aws_region": "eu-central-1",
-	    "source_ami": "ami-fe408091",
-	    "subnet_id": "subnet-24e10b4d"
+	    "aws_region": "eu-west-1",
+	    "source_ami": "ami-f90a4880",
+	    "subnet_id": "subnet-edfb09a4"
 	},
 	"builders": [
 	    {
