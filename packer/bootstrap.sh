@@ -32,8 +32,8 @@ apt-get -y install docker-ce stress python-dev build-essential cmake htop ipytho
 curl -o /tmp/go.tar.gz https://dl.google.com/go/go1.10.1.linux-amd64.tar.gz
 tar -C /usr/local -xzf /tmp/go.tar.gz
 # Setting Go binary path
-sed -e '/^PATH/s/"$/:\/usr\/local\/go\/bin"/g' -i /etc/environments
-sed -e '/^PATH/s/"$/:\/home\/ubuntu\/go\/bin"/g' -i /etc/environments
+sed -e '/^PATH/s/"$/:\/usr\/local\/go\/bin"/g' -i /etc/environment
+sed -e '/^PATH/s/"$/:\/home\/ubuntu\/go\/bin"/g' -i /etc/environment
 
 # Include the memory and memsw cgroups
 sed -i.bak 's|^kernel.*$|\0 cgroup_enable=memory swapaccount=1|' /boot/grub/menu.lst
