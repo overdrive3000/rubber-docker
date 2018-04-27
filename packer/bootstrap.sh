@@ -55,7 +55,9 @@ usermod -G docker -a ubuntu
 mkdir /workshop
 pushd /workshop
 git clone https://github.com/overdrive3000/rubber-docker.git
+pushd rubber-docker
 git checkout go-version
+popd
 pip install -r rubber-docker/requirements.txt
 popd
 
