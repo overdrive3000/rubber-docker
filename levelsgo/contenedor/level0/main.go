@@ -14,8 +14,8 @@ package level0
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
+	"syscall"
 
 	"github.com/pkg/errors"
 )
@@ -32,29 +32,23 @@ const (
 
 // Run execute a process using fork-exec
 func Run(entrypoint []string) error {
+	args := make([]string, len(entrypoint))
+	if len(entrypoint) > 1 {
+		args = entrypoint[1:]
+	}
 	cmd, err := exec.LookPath(entrypoint[0])
 	if err != nil {
-		return errors.Wrap(err, "Run: cannot get command path")
+		return errors.Wrap(err, "Run: cannot look executable path")
 	}
-	cwd, err := os.Getwd()
-	if err != nil {
-		return errors.Wrap(err, "Run: cannot get current directory")
+	procAttr := syscall.ProcAttr{
+		Dir:   "/tmp",
+		Files: []uintptr{uintptr(syscall.Stdin), uintptr(syscall.Stdout), uintptr(syscall.Stderr)},
+		Env:   []string{},
+		Sys: &syscall.SysProcAttr{
+			Foreground: false,
+		},
 	}
-	pa := os.ProcAttr{
-		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
-		Dir:   cwd,
-	}
-	// Start given process via fork-exec method
-	proc, err := os.StartProcess(cmd, entrypoint, &pa)
-	if err != nil {
-		return errors.Wrapf(err, "Run: cannot run the given command with pid %d", proc.Pid)
-	}
-	// Wait until process finishes
-	state, err := proc.Wait()
-	if err != nil {
-		return errors.Wrapf(err, "ERROR")
-	}
-	fmt.Printf("%d exited with status %d\n", proc.Pid, state)
-
+	pid, err := syscall.ForkExec(cmd, args, &procAttr)
+	fmt.Println("Spawned proc", pid)
 	return nil
 }
