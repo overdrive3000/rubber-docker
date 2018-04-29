@@ -14,8 +14,8 @@ package level0
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
-	"syscall"
 
 	"github.com/pkg/errors"
 )
@@ -31,24 +31,39 @@ const (
 )
 
 // Run execute a process using fork-exec
-func Run(entrypoint []string) error {
-	args := make([]string, len(entrypoint))
-	if len(entrypoint) > 1 {
-		args = entrypoint[1:]
-	}
+func Run(entrypoint []string, envars []string) error {
+
+	// Look for the full command path
 	cmd, err := exec.LookPath(entrypoint[0])
 	if err != nil {
 		return errors.Wrap(err, "Run: cannot look executable path")
 	}
-	procAttr := syscall.ProcAttr{
-		Dir:   "/tmp",
-		Files: []uintptr{uintptr(syscall.Stdin), uintptr(syscall.Stdout), uintptr(syscall.Stderr)},
-		Env:   []string{},
-		Sys: &syscall.SysProcAttr{
-			Foreground: false,
-		},
+
+	// Obtain current directory
+	cwd, err := os.Getwd()
+	if err != nil {
+		return errors.Wrap(err, "Run: cannot get current directory")
 	}
-	pid, err := syscall.ForkExec(cmd, args, &procAttr)
-	fmt.Println("Spawned proc", pid)
+
+	// Setting process attributes
+	procAttr := os.ProcAttr{
+		Dir:   cwd,
+		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
+		Env:   envars,
+	}
+
+	proc, err := os.StartProcess(cmd, entrypoint, &procAttr)
+	if err != nil {
+		return errors.Wrapf(err, "Run: cannot run %s", entrypoint)
+	}
+
+	// Wait until process ends
+	state, err := proc.Wait()
+	if err != nil {
+		return errors.Wrapf(err, "Run: error while running process %d", proc.Pid)
+	}
+
+	fmt.Printf("%d %s\n", proc.Pid, state.String())
+
 	return nil
 }

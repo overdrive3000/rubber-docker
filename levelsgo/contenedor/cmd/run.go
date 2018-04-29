@@ -19,6 +19,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Flag values
+var (
+	Env []string
+)
+
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   level.USAGE,
@@ -26,11 +31,10 @@ var runCmd = &cobra.Command{
 	Long:  level.LONG,
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := level.Run(args); err != nil {
-			return err
-		}
-		return nil
+		err := level.Run(args, Env)
+		return err
 	},
+	SilenceErrors: true,
 }
 
 func init() {
@@ -45,4 +49,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	runCmd.Flags().StringSliceVarP(&Env, "env", "e", nil, "set environment variables like -e PORT=80")
 }
