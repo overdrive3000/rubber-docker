@@ -20,18 +20,26 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Container data structure
+type Container struct {
+	Env          []string
+	ImageName    string
+	ImageDir     string
+	ContainerDir string
+}
+
 // exported constant
 const (
 	USAGE = "run"
 	SHORT = "contenerdor run /bin/sh"
 	LONG  = `will:
 
-- fork a new process which will exec '/bin/sh
+- fork a new process which will exec '/bin/sh'
 - while the parent waits for it to finish`
 )
 
 // Run execute a process using fork-exec
-func Run(entrypoint []string, envars []string) error {
+func Run(entrypoint []string, flags Container) error {
 
 	// Look for the full command path
 	cmd, err := exec.LookPath(entrypoint[0])
@@ -49,7 +57,7 @@ func Run(entrypoint []string, envars []string) error {
 	procAttr := os.ProcAttr{
 		Dir:   cwd,
 		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
-		Env:   envars,
+		Env:   flags.Env,
 	}
 
 	proc, err := os.StartProcess(cmd, entrypoint, &procAttr)
