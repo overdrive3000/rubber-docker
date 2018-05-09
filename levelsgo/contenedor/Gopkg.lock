@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/docker/distribution"
+  packages = ["uuid"]
+  revision = "48294d928ced5dd9b378f7fd7c6f5da3ff3f2c89"
+  version = "v2.6.2"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
@@ -28,6 +34,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3ce30b235119268b96307af680a5de199e75949bd3bec0d8bd17bf659f77f574"
+  inputs-digest = "d4fe4a01cb0880949a99209d23b67dbf74410ebd723dd84c7bc816fb1a2a487b"
   solver-name = "gps-cdcl"
   solver-version = 1

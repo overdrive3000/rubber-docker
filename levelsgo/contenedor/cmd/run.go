@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	level "github.com/overdrive3000/justforfunc32/contenedor/level0"
+	"github.com/overdrive3000/justforfunc32/contenedor/level"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +32,7 @@ var runCmd = &cobra.Command{
 		return err
 	},
 	SilenceErrors: true,
+	SilenceUsage:  true,
 }
 
 func init() {
